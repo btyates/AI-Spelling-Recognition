@@ -291,7 +291,6 @@ void getPrTableForPossibleInitialStates(double prTable[], int sizeOfTable)
 		sumRatio += pow(2, i);
 	}
 	probLast = 1 / sumRatio;
-	cout << " x is " << probLast << endl;
 
 	//Second, for each character state calculate the probability 
 	//	transitioning from the special I state into the character state.
@@ -326,16 +325,55 @@ void getPrTableForPossibleNextStates
 	//	going from the current state into other down-stream states down in word
 	//	including all the down-stream character states and the
 	//	special F final state.
-         
+
+	// Declare variables for the sum ratio and probability of the final
+	double sumRatio = 0;
+	double probF= 0;
+	
+	// DEBUG
+	//cout << "The current state is: " << currentState << endl << endl;
+	//cout << "The size of the table is : " << sizeOfTable << endl << endl;
+	
+	// Create a loop to iterate through the states to calculate the ratio
+	// This should adjust to shrink with each iteration as the current state progresses - halt the loop based on the current state
+	// The i is used as an exponentiation variable and will be incremented
+	for (int i = 0, j = currentState; j < sizeOfTable - 1; i++, j++)
+	{
+		// The sums are based on powers of two
+		sumRatio += pow(2, i);
+	}
+
+	// Calculate the probability of advancing to the Final state from the given state
+	probF = .8 / sumRatio;
+
+	// DEBUG
+	//cout << "The sumRatio is " << sumRatio << endl;
+	//cout << "The prob of the final is " << probF << endl;
+
 	//Second, for each state (excluding the special I state)
 	//	calculate the probability of
 	//	transitioning from the current state into the character state
 	//	and store the probability into the table.
-
-
-	//**************************************************
-	//Replace the following with your own implementation
-	//**************************************************
+	
+	// Iterate through the values to assign the correct probabilities
+	for (int i = 0; i < sizeOfTable; i++)
+	{
+		if (i == currentState)
+		{
+			// If i equals the current state then the probability of repeating the character is .2
+			transitionPrTable[i] = .2;
+		}
+		else if (i > currentState)
+		{
+			// If i is greater, then the probability is based on the ratio
+			transitionPrTable[i] = probF * pow(2, sizeOfTable - 1 - i);
+		}
+		else
+		{
+			// If i is less, then it is a character that has been passed and the probability should be zero
+			transitionPrTable[i] = 0;
+		}
+	}
 
 }
 
