@@ -211,7 +211,7 @@ double prCharGivenCharOfState(char charGenerated, char charOfTheState)
 	int totalRatio = 2 * ( pow(deg, 12) + pow(deg, 11) + pow(deg, 10) + pow(deg, 9) + pow(deg, 8) + pow(deg, 7) + pow(deg, 6) + pow(deg, 5) + pow(deg, 4) + pow(deg, 3) + pow(deg, 2) + pow(deg, 1) ) + 1;
 
 	// Calculate the probability of the final component (probability of generating character 13 distance from the state character
-	double x = prKbMiss / totalRatio;
+	double probChar13 = prKbMiss / totalRatio;
 
 	// Calculate the distance of the charGenerated (character typed) from the charOfTheState (character desired)
 	int distance = charGenerated - charOfTheState;
@@ -255,12 +255,12 @@ double prCharGivenCharOfState(char charGenerated, char charOfTheState)
 	else if (distance == 13)
 	{
 		// if the distance is 13, then the furthest character was hit, which was calculated in an earlier step
-		prob = x;
+		prob = probChar13;
 	}
 	else
 	{
 		// otherwise, the probability can be calculated using ratios 
-		prob = x * pow(deg, (13 - distance));
+		prob = probChar13 * pow(deg, (13 - distance));
 	}
 
 	return prob;
@@ -284,16 +284,22 @@ void getPrTableForPossibleInitialStates(double prTable[], int sizeOfTable)
 
 	//First calculate the sum of ratios of probabilities of
 	//	going from the I state into these character states.
+	double sumRatio = 0;
+	double probLast = 0;
+	for (int i = 0; i < sizeOfTable; i++)
+	{
+		sumRatio += pow(2, i);
+	}
+	probLast = 1 / sumRatio;
+	cout << " x is " << probLast << endl;
 
-        
 	//Second, for each character state calculate the probability 
 	//	transitioning from the special I state into the character state.
-
-	//**************************************************
-	//Replace the following with your own implementation
-	//**************************************************
-
-
+	for (int i = 0; i < sizeOfTable; i++)
+	{
+		prTable[i] = probLast * pow(2, sizeOfTable - 1 - i);
+	}
+	
 }
 
 
