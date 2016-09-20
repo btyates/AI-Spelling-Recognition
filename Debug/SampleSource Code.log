@@ -1,8 +1,0 @@
-﻿  models.cpp
-c:\users\yatesb\desktop\school\ai-spelling-recognition\models.cpp(94): warning C4996: 'getch': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _getch. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\conio.h(452): note: see declaration of 'getch'
-c:\users\yatesb\desktop\school\ai-spelling-recognition\models.cpp(167): warning C4996: 'getch': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _getch. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\conio.h(452): note: see declaration of 'getch'
-c:\users\yatesb\desktop\school\ai-spelling-recognition\models.cpp(211): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-  SampleSource Code.vcxproj -> C:\Users\yatesb\Desktop\School\AI-Spelling-Recognition\Debug\SampleSource Code.exe
-  SampleSource Code.vcxproj -> Debug\SampleSource Code.pdb (Full PDB)
