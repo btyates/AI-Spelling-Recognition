@@ -205,6 +205,25 @@ bool traceON = true;   // output tracing messages
 //
 /************************************************************************/
 
+double scalingVar = 0;
+
+void calculateScalingVar()
+{
+	if (scalingVar == 0)
+	{
+		// The probability of miss contains all of the other 25 characters other than the charOfTheState
+		// In order to calculate the common component, find the correct ratios
+		// Convert the kbDegenrateDistancePower into a different variable type	
+		double deg = int(kbDegenerateDistancePower);
+		// Calculate the total ratio of all the miss components for a 26 character keyboard
+		int totalRatio = 2 * (pow(deg, 12) + pow(deg, 11) + pow(deg, 10) + pow(deg, 9) + pow(deg, 8) + pow(deg, 7) + pow(deg, 6) + pow(deg, 5) + pow(deg, 4) + pow(deg, 3) + pow(deg, 2) + pow(deg, 1)) + 1;
+
+		// Calculate the probability of the final component (probability of generating character 13 distance from the state character
+		scalingVar = prKbMiss / totalRatio;
+	}
+	return;
+}
+
 
 /************************************************************************/
 //Calculate and return the probability of charGenerated actually typed
@@ -214,16 +233,9 @@ double prCharGivenCharOfState(char charGenerated, char charOfTheState)
 {   // KEYBOARD STATE
     // CharGenerated = What we actually touched (typed)
     // CharOfTheState = What we want to type in our mind (our cognitive state)
-
-	// The probability of miss contains all of the other 25 characters other than the charOfTheState
-	// In order to calculate the common component, find the correct ratios
-	// Convert the kbDegenrateDistancePower into a different variable type	
 	double deg = int(kbDegenerateDistancePower);
-	// Calculate the total ratio of all the miss components for a 26 character keyboard
-	int totalRatio = 2 * (pow(deg, 12) + pow(deg, 11) + pow(deg, 10) + pow(deg, 9) + pow(deg, 8) + pow(deg, 7) + pow(deg, 6) + pow(deg, 5) + pow(deg, 4) + pow(deg, 3) + pow(deg, 2) + pow(deg, 1)) + 1;
 
-	// Calculate the probability of the final component (probability of generating character 13 distance from the state character
-	double probChar13 = prKbMiss / totalRatio;
+	calculateScalingVar();
 
 	// Calculate the distance of the charGenerated (character typed) from the charOfTheState (character desired)
 	int distance = charGenerated - charOfTheState;
@@ -266,12 +278,12 @@ double prCharGivenCharOfState(char charGenerated, char charOfTheState)
 	else if (distance == 13)
 	{
 		// if the distance is 13, then the furthest character was hit, which was calculated in an earlier step
-		prob = probChar13;
+		prob = scalingVar;
 	}
 	else
 	{
 		// otherwise, the probability can be calculated using ratios 
-		prob = probChar13 * pow(deg, (13 - distance));
+		prob = scalingVar * pow(deg, (13 - distance));
 	}
 
 	return prob;
@@ -462,14 +474,13 @@ int take1SampleFrom1PrSpace(double prTable[], int sizeOfTable)
 //	calculate pr(charGenerated = 'z' | charToType), and
 //	store these probabilities in prTable.
 /************************************************************************/
-void getKeyboardProbabilityTable(char charToType, double prTable[])
+void getKeyboardProbabilityTable(char charToType, double prTable[], char map[])
 {
 	// Assign asciiMap characters into an array
-	char asciiMap[] = "abcdefghijklmnopqrstuvwxyz";
 	// Calculate the probabilities
 	for (int i = 0; i < 26; i++)
 	{
-		prTable[i] = prCharGivenCharOfState(asciiMap[i], charToType);
+		prTable[i] = prCharGivenCharOfState(map[i], charToType);
 	}
 
 	return;
@@ -486,10 +497,10 @@ char typeOneChar(char charToType)
 {
 	//Remove and write your own code
 	double prTable[26];
-	getKeyboardProbabilityTable(charToType, prTable);
+	char asciiMap[] = "abcdefghijklmnopqrstuvwxyz";
+	getKeyboardProbabilityTable(charToType, prTable, asciiMap);
 
 	int x = take1SampleFrom1PrSpace(prTable, 26);
-	char asciiMap[] = "abcdefghijklmnopqrstuvwxyz";
 
 	return asciiMap[x];
 }
@@ -505,7 +516,59 @@ char typeOneChar(char charToType)
 /************************************************************************/
 void typeOneWord(char word[], char output[], bool traceON, int maxOutput)
 { 
-	//Write your own code
+	/*
+	// PATTERN: FILL A PROBABILITY TABLE THEN SIMULATE
 
+	int size = sizeof(word)/sizeof(word[0]);
+	double probTable[size];
+
+	// Calculate the probabilities of the initial states 
+	getPrTableForPossibleInitialStates(probTable, size);
+
+	// Store the word in a character array
+	// Calculate the probabilities
+
+	// Simulate the first state using the table probabilities 
+	double prTable[size];
+	for (int i = 0; i < size; i++)
+	{
+		prTable[i] = prCharGivenCharOfState(word[i], charToType);
+	}
+	int x = take1SampleFrom1PrSpace(prTable, size);
+
+	return word[x];
+}
+
+
+	// Type one charactre 
+
+	getPrTableForPossibleNextStates
+		(transitionPrTable[], int sizeOfTable, int currentState);
+
+	int sizeOfSpace = strlen("his") + 1;
+	string word = "his_";
+	for (int currentState = 0; currentState< sizeOfSpace - 1; currentState++)
+	{
+		double prSum, transitionPrTable[4];
+		cout << "Probability distribution over " << endl
+			<< "all possible next states given that the current state is "
+			<< word[currentState] << endl;
+
+		prSum = 0;
+		//nextStatePrTableGivenCurrentState(currentState,transitionPrTable,6);
+		getPrTableForPossibleNextStates
+			(transitionPrTable, 4, currentState);
+
+		for (int nextState = 0; nextState< sizeOfSpace; nextState++)
+		{
+			cout << '\t'
+				<< "Pr[NextState=" << word[nextState] << "|CurrentState=" << word[currentState] << "]="
+				<< transitionPrTable[nextState] << endl;
+			prSum += transitionPrTable[nextState];
+		}
+
+		*/
+
+	return;
 }// end of the function
 /*******************************************************************/
