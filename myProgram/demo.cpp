@@ -288,7 +288,7 @@ void main()
 
 				for (int i=0; i<10; i++)
 				{
-					typeOneWord(word, output, true);
+					typeOneWord(word, output, true, 100);
 					cout << endl << "[" << i+1 << "]: get \"" << output 
 						 << "\" while trying to type \"" << word << "\"" << endl << endl << endl;
 				}
