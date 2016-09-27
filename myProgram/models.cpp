@@ -542,7 +542,11 @@ void typeOneWord(char word[], char output[], bool traceON, int maxOutput)
 	// Simulate typing the character 
 	asciiChar = typeOneChar(word[i]);
 	
-	// DEBUG
+	if (traceON)
+	{
+		cout << "'" << asciiChar << "' pressed, Current state: " << word[i] << ", " << i << " ";
+	}
+
 	//cout << "Character typed : " << asciiChar << endl << endl;
 	
 	// Assign the character to the output stream
@@ -564,9 +568,17 @@ void typeOneWord(char word[], char output[], bool traceON, int maxOutput)
 		// Simulate the next state transition using the table probabilities
 		i = take1SampleFrom1PrSpace(nexTable, wordSize); // Returns the state chosen from simulation
 		
-		// DEBUG
-		//cout << "Next state chosen - position: " << i << endl << endl;
-		//cout << "Character attempted : " << word[i] << endl << endl;
+		if (traceON)
+		{
+			if (i == wordSize - 1)
+			{
+				cout << "The next state: The final state" << endl;
+			}
+			else 
+			{
+				cout << "The next state: " << word[i] << ", " << i << endl;
+			}	
+		}
 
 		if (i < wordSize - 1)
 		{
@@ -574,6 +586,12 @@ void typeOneWord(char word[], char output[], bool traceON, int maxOutput)
 			asciiChar = typeOneChar(word[i]);
 			//cout << "Character types : " << asciiChar << endl << endl;
 			output[j] = asciiChar;
+
+			if (traceON)
+			{
+				cout << "'" << asciiChar << "' pressed, Current state: " << word[i] << ", " << i << " ";
+			}
+
 		}
 		else
 		{
