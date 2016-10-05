@@ -123,6 +123,7 @@ void typeOneWord(char word[], char output[], bool traceON = false, int maxOutput
 //When traceON is true (by default it is false), extra outputs are provided as traces.
 /************************************************************************/
 
+void typeOneArticle(char * corruptedMessageFile, char * sourceArticle, bool trace=false);
 
 /************************************************************************/
 // Also see below how option A in the main function in demo.cpp 

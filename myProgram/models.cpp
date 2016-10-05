@@ -601,3 +601,95 @@ void typeOneWord(char word[], char output[], bool traceON, int maxOutput)
 	return;
 }// end of the function
 /*******************************************************************/
+
+/* Programming #2C */
+
+void typeOneArticle(char * corruptedMessageFile, char * sourceArticle, bool trace) 
+{
+/* 
+Function overview
+corruptedMesageFile and sourceArticle are two character arrays to store the names of two files, 
+trace is a boolean flag, output traces to the screen for your debuging purpose when it is true; otherwise keep silent
+*/
+	// Variables
+	string line; // temp string placeholder
+	//char word[21]; // input word
+	char output[101]; // output word
+	char word[21];
+	int maxOutput = 100; // output limit
+	int size = 0;
+
+	// Assign File handlers
+	ifstream inputFile;
+	ofstream outputFile;
+
+	// Get filename stored in sourceArticle and corruptedMessageFile
+	// Open the files, sourceArticle for input and corruptedMessage for output
+	inputFile.open(sourceArticle);
+	outputFile.open(corruptedMessageFile);
+
+	// check the file is open
+	if (inputFile.is_open())
+	{
+		// Read the lines (words) one by one from the file sourceArticle:
+		while (getline(inputFile, line))
+		{
+			// Get the size of the input string
+			size = line.size();
+			//cout << "Line size is " << size << endl;
+
+			// Clear the word array by assigning null characters
+			for (int i = 0; i < 21; i++)
+			{
+				word[i] = '\0';
+			}
+
+			// Convert the string into a character array
+			for (int i = 0; i < size; i++)
+			{
+				// Account for the null character at the end of the string
+				if (i == size - 1)
+				{
+					word[i] = '\0';
+				}
+				// Otherwise copy the character at the given index
+				else
+				{
+					word[i] = line[i];
+				}
+			}
+
+			if (trace)
+			{
+				cout << "Simulate the typing of this word: " << word << endl;
+			}
+			// For each word/iteration:
+			//i) simulate how the word may be typed accordin to the spelling model and the keyboard model, and then
+			typeOneWord(word, output, trace, maxOutput);
+			//ii) store the resulting wod into the file corruptedMessageFile
+			if (outputFile.is_open())
+			{
+				outputFile << output << "\n";
+			}
+			else
+			{
+				if (trace)
+				{
+					cout << "Unable to open output file" << endl;
+				}
+			}
+		}
+	}
+	else
+	{
+		if (trace)
+		{
+			cout << "Unable to open source file" << endl;
+		}
+	}
+	// Close the files
+	outputFile.close();
+	inputFile.close();
+
+	return;
+}
