@@ -221,7 +221,7 @@ void main()
 		cout<<"S. Spelling model demo"<<endl;
 		cout<<"A. Simulate typing of a word"<<endl;
 		// cout<<"H. Keyboard+Spelling HMM model demo"<<endl;
-		// cout<<"P. prOf1CharSeriesObservedWhenTyping1Word(string observed, string word)"<<endl;
+		cout<<"P. prOf1CharSeriesObservedWhenTyping1Word(string observed, string word)"<<endl;
 		//cout << "****  Typing and Spelling Recognition Testings	 ****" << endl;
 		//cout<<"T. Test typing a message of 20 random words" << endl;
 		cout<<"B. Simulate typing of Biola vision statements" << endl;
@@ -346,30 +346,30 @@ void main()
 		//	endOfService("[Recover original message]");
 		//	break;
 
-		//case 'P': case 'p'://
-		//	displayParametersSpellingModel();
-		//	displayParametersKbModel();
+		case 'P': case 'p'://
+			displayParametersSpellingModel();
+			displayParametersKbModel();
 
-		//	cout << "[Probaility(observedString, actualWord)]:" << endl;
-		//	{	string observedString,  actualWord;
+			cout << "[Probaility(observedString, actualWord)]:" << endl;
+			{	string observedString,  actualWord;
 
 
-		//		cout << "What is the observed string you see? (Enter . to quit)";
-		//		cin >> observedString;
-		//		while (observedString != ".")
-		//		{
-		//			cout << "What is the actual string you intent to type?";
-		//			cin >> actualWord;
-		//			cout << "Probaility(" << observedString << " | " <<  actualWord << ")="
-		//				 << prOf1CharSeriesWhenTyping1Word(observedString, actualWord) 
-		//				 << endl << endl;
+				cout << "What is the observed string you see? (Enter . to quit)";
+				cin >> observedString;
+				while (observedString != ".")
+				{
+					cout << "What is the actual string you intent to type?";
+					cin >> actualWord;
+					cout << "Probaility(" << observedString << " | " <<  actualWord << ")="
+						 << prOf1CharSeriesWhenTyping1Word(observedString, actualWord) 
+						 << endl << endl;
 
-		//			cout << "What is the observed string you see? (Enter . to quit)";
-		//			cin >> observedString;
-		//		} 
-		//	}
-		//	endOfService("[Probaility(observedString, actualWord)]");
-		//	break;
+					cout << "What is the observed string you see? (Enter . to quit)";
+					cin >> observedString;
+				} 
+			}
+			endOfService("[Probaility(observedString, actualWord)]");
+			break;
 		case 'X': case 'x'://
 			setParametersSpellingModel();
 			endOfService("Reset parameters of the spelling model");

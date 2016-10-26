@@ -5,6 +5,7 @@
 #include <fstream>
 #include <conio.h>	
 #include <string>
+#include <vector>
 
 #include "models.h"
 
@@ -604,13 +605,13 @@ void typeOneWord(char word[], char output[], bool traceON, int maxOutput)
 
 /* Programming #2C */
 
-void typeOneArticle(char * corruptedMessageFile, char * sourceArticle, bool trace) 
+void typeOneArticle(char * corruptedMessageFile, char * sourceArticle, bool trace)
 {
-/* 
-Function overview
-corruptedMesageFile and sourceArticle are two character arrays to store the names of two files, 
-trace is a boolean flag, output traces to the screen for your debuging purpose when it is true; otherwise keep silent
-*/
+	/*
+	Function overview
+	corruptedMesageFile and sourceArticle are two character arrays to store the names of two files,
+	trace is a boolean flag, output traces to the screen for your debuging purpose when it is true; otherwise keep silent
+	*/
 	// Variables
 	string line; // temp string placeholder
 	//char word[21]; // input word
@@ -692,4 +693,109 @@ trace is a boolean flag, output traces to the screen for your debuging purpose w
 	inputFile.close();
 
 	return;
+
+}
+
+double prOf1CharSeriesWhenTyping1Word(string observedString, string wordString)
+{
+	/*
+	The function should calculate and return the probability of getting a 
+	series of characters stored in the string object observedString
+	when you want to type the word stored in the string object wordString
+	*/
+
+	float probability = 0; // final answer probability
+	int wordSize = wordString.size();
+	int observedSize = observedString.size();
+
+	// Note: the length of the string is the exact same as the input, there are no garbage characters
+
+	// get table of possible initial states
+	double * iniTable; // Create an probability table corresponding to the word 
+	iniTable = new double[wordSize];
+	getPrTableForPossibleInitialStates(iniTable, wordSize);
+	
+	// get table of possible next states
+	int transSize = wordSize + 1;
+	double * transTable; // Create an probability table corresponding to the word 
+	transTable = new double[transSize];
+	//currentState = 0;
+	//prSum = 0;
+
+	//create the complete transitional probability table + initial state table
+	vector<vector<double>> transitionPrTable(transSize);
+
+	//add the initial state probabilities 
+	for (int i = 0; i < wordSize; i++)
+	{
+		transitionPrTable[0].push_back(iniTable[i]);
+	}
+	// add the final zero to the initial row
+	transitionPrTable[0].push_back(0);
+
+	for (int currentState = 1; currentState < transSize; currentState++)
+	{
+		getPrTableForPossibleNextStates
+		(transTable, transSize, currentState - 1);
+
+		for (int i = 0; i < transSize; i++)
+		{
+			transitionPrTable[currentState].push_back(transTable[i]);
+		}
+	}
+
+	// table for storing the state probability table
+	vector < vector <double> > viterbiTable(wordSize);
+
+	// initialize the vector with zeros
+	for (int row = 0; row < wordSize; row++)
+	{
+		for (int sizer = 0; sizer < observedSize; sizer++)
+		{
+			viterbiTable[row].push_back(0);
+		}
+	}
+
+	int sum = 0;
+
+	// Now the primary iteration of the forward backward algorithm
+	for (int col = 0; col < observedSize; col++)
+	{
+		for (int row = 0; row < wordSize; row++)
+		{
+			if (col == 0)
+			{
+				viterbiTable[row][col] = transitionPrTable[col][row] * prCharGivenCharOfState(observedString[col], wordString[row]);
+			}
+			else
+			{
+				for (int transIndex = 0; transIndex < row + 1  ; transIndex++)
+				{
+					viterbiTable[row][col] = viterbiTable[row][col] + transitionPrTable[transIndex + 1][row] * viterbiTable[transIndex][col - 1];
+				}
+				viterbiTable[row][col] = viterbiTable[row][col] * prCharGivenCharOfState(observedString[col], wordString[row]);
+			}
+		}
+	}
+
+	for (int row = 0; row < wordSize; row++)
+	{
+		for (int col = 0; col < observedSize; col++)
+		{
+			cout << viterbiTable[row][col] << " ";
+		}
+		cout << endl;
+	}
+
+	// calculate the final probability
+	int row = wordSize;
+	int col = observedSize;
+
+	for (int transIndex = 0; transIndex < row; transIndex++)
+	{
+		probability = probability + transitionPrTable[transIndex + 1][row] * viterbiTable[transIndex][col - 1];
+	}
+
+	return probability;
+
 }

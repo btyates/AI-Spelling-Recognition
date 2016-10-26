@@ -170,3 +170,5 @@ int main()
 
 		....
 */
+
+double prOf1CharSeriesWhenTyping1Word(string observedString, string wordString);
