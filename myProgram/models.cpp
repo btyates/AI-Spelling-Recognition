@@ -778,14 +778,14 @@ double prOf1CharSeriesWhenTyping1Word(string observedString, string wordString)
 		}
 	}
 
-	for (int row = 0; row < wordSize; row++)
+	/*for (int row = 0; row < wordSize; row++)
 	{
 		for (int col = 0; col < observedSize; col++)
 		{
 			cout << viterbiTable[row][col] << " ";
 		}
 		cout << endl;
-	}
+	}*/
 
 	// calculate the final probability
 	int row = wordSize;
