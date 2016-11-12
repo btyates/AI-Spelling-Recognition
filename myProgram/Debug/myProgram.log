@@ -1,4 +1,4 @@
 ﻿  models.cpp
-c:\users\yatesb\desktop\school\ai-spelling-recognition\myprogram\models.cpp(796): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\yatesb\desktop\school\ai-spelling-recognition\myprogram\models.cpp(799): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
   myProgram.vcxproj -> C:\Users\yatesb\Desktop\School\AI-Spelling-Recognition\Debug\myProgram.exe
   myProgram.vcxproj -> C:\Users\yatesb\Desktop\School\AI-Spelling-Recognition\Debug\myProgram.pdb (Full PDB)

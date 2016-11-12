@@ -6,6 +6,9 @@
 #include <conio.h>	
 #include <string>
 #include <vector>
+#include <cmath>
+#include <stdio.h>
+#include <math.h>
 
 #include "models.h"
 
@@ -798,4 +801,55 @@ double prOf1CharSeriesWhenTyping1Word(string observedString, string wordString)
 
 	return probability;
 
+}
+
+double logPrOfGettingDocument1WhenTypingDocument2(string document1, string document2)
+{
+	// Determine for each document d who is the most likely person who has generated the document d when trying to type the Biola vision statement. 
+
+	// For each document, we should for each person determine the probabilty that the document is the resulting text when that person tried to type 
+	// the Biola vision statement. We can then compare these probabilities and the most likely person is simply the person p with the highest probability for the document
+
+	// Let document 1 be name of d the typed vision statement
+	// Let document 2 be name of p the biola vision statement
+
+	// Pr(d|p) = Pr(d1|w1,p)*Pr(d2|w2,p)*...*Pr(dn|wn,p)
+
+	//char word[21];
+	double sumLog = 0;
+	double temp = 0;
+	string line1;
+	string line2;
+
+	// Assign File handlers
+	ifstream file1(document1);
+	ifstream file2(document2);
+
+	//file1.open(document1);
+	//file2.open(document2);
+		
+	// check the files is open
+	if (file1.is_open() && file2.is_open())
+	{
+		// Read the lines (words) one by one from the files
+		while (getline(file1, line1) && getline(file2, line2))
+		{
+			cout << "Add log Pr(" << line1 << "|" << line2 << ")" << endl;
+			temp = log(prOf1CharSeriesWhenTyping1Word(line1, line2));
+			// for each pair di and wi, calcuate Pr(di|wi,p) and logPr(di|wi,p)
+			if (isinf(temp) == 0)
+				sumLog = sumLog + temp;
+		}
+	}
+	else
+	{
+		cout << "Unable to open source file" << endl;
+	}
+	// Close the files
+	file1.close();
+	file2.close();
+
+	// use logs to retain numerical precision
+
+	return sumLog;
 }
