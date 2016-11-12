@@ -388,8 +388,8 @@ void main()
 				sumLog = logPrOfGettingDocument1WhenTypingDocument2(observedDocument, actualDocument);
 				sumLog10 = log10(exp(sumLog));
 				cout << "log Probability(" << observedDocument << " | " << actualDocument << ") is:" << endl;
-				cout << sumLog << "using natural logarithm base e, or equivalently" << endl;
-				cout << sumLog10 << "using logarithm base 10" << endl;
+				cout << sumLog << " using natural logarithm base e, or equivalently" << endl;
+				cout << sumLog10 << " using logarithm base 10" << endl;
 
 				cout << "What is the observed corrupted document? (Enter . to quit)" << endl;
 				cin >> observedDocument;
