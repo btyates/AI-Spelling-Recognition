@@ -209,26 +209,6 @@ bool traceON = true;   // output tracing messages
 //
 /************************************************************************/
 
-double scalingVar = 0;
-
-void calculateScalingVar()
-{
-	if (scalingVar == 0)
-	{
-		// The probability of miss contains all of the other 25 characters other than the charOfTheState
-		// In order to calculate the common component, find the correct ratios
-		// Convert the kbDegenrateDistancePower into a different variable type	
-		int deg = int(kbDegenerateDistancePower);
-		// Calculate the total ratio of all the miss components for a 26 character keyboard
-		int totalRatio = int(2 * (pow(deg, 12) + pow(deg, 11) + pow(deg, 10) + pow(deg, 9) + pow(deg, 8) + pow(deg, 7) + pow(deg, 6) + pow(deg, 5) + pow(deg, 4) + pow(deg, 3) + pow(deg, 2) + pow(deg, 1)) + 1);
-
-		// Calculate the probability of the final component (probability of generating character 13 distance from the state character
-		scalingVar = prKbMiss / totalRatio;
-	}
-	return;
-}
-
-
 /************************************************************************/
 //Calculate and return the probability of charGenerated actually typed
 //given charOfTheState as the underlying cognitive state. 
@@ -237,9 +217,12 @@ double prCharGivenCharOfState(char charGenerated, char charOfTheState)
 {   // KEYBOARD STATE
     // CharGenerated = What we actually touched (typed)
     // CharOfTheState = What we want to type in our mind (our cognitive state)
-	double deg = int(kbDegenerateDistancePower);
+	int deg = int(kbDegenerateDistancePower);
+	// Calculate the total ratio of all the miss components for a 26 character keyboard
+	int totalRatio = int(2 * (pow(deg, 12) + pow(deg, 11) + pow(deg, 10) + pow(deg, 9) + pow(deg, 8) + pow(deg, 7) + pow(deg, 6) + pow(deg, 5) + pow(deg, 4) + pow(deg, 3) + pow(deg, 2) + pow(deg, 1)) + 1);
 
-	calculateScalingVar();
+	// Calculate the probability of the final component (probability of generating character 13 distance from the state character
+	double scalingVar = prKbMiss / totalRatio;
 
 	// Calculate the distance of the charGenerated (character typed) from the charOfTheState (character desired)
 	int distance = charGenerated - charOfTheState;
@@ -372,7 +355,7 @@ void getPrTableForPossibleNextStates
 	}
 
 	// Calculate the probability of advancing to the Final state from the given state
-	probF = .8 / sumRatio;
+	probF = prSpMoveOn / sumRatio;
 
 	// DEBUG
 	//cout << "The sumRatio is " << sumRatio << endl;
@@ -389,7 +372,7 @@ void getPrTableForPossibleNextStates
 		if (i == currentState)
 		{
 			// If i equals the current state then the probability of repeating the character is .2
-			transitionPrTable[i] = .2;
+			transitionPrTable[i] = prSpRepeat;
 		}
 		else if (i > currentState)
 		{
@@ -803,7 +786,7 @@ double prOf1CharSeriesWhenTyping1Word(string observedString, string wordString)
 
 }
 
-double logPrOfGettingDocument1WhenTypingDocument2(string document1, string document2)
+double logPrOfGettingDocument1WhenTypingDocument2(string document1, string document2, string select)
 {
 	// Determine for each document d who is the most likely person who has generated the document d when trying to type the Biola vision statement. 
 
@@ -817,6 +800,7 @@ double logPrOfGettingDocument1WhenTypingDocument2(string document1, string docum
 
 	//char word[21];
 	double sumLog = 0;
+	double sumLog10 = 0;
 	double temp = 0;
 	string line1;
 	string line2;
@@ -834,11 +818,11 @@ double logPrOfGettingDocument1WhenTypingDocument2(string document1, string docum
 		// Read the lines (words) one by one from the files
 		while (getline(file1, line1) && getline(file2, line2))
 		{
-			cout << "Add log Pr(" << line1 << "|" << line2 << ")" << endl;
-			temp = log(prOf1CharSeriesWhenTyping1Word(line1, line2));
+			// use logs to retain numerical precision
 			// for each pair di and wi, calcuate Pr(di|wi,p) and logPr(di|wi,p)
-			if (isinf(temp) == 0)
-				sumLog = sumLog + temp;
+			cout << "Add log Pr(" << line1 << "|" << line2 << ")" << endl;	
+			sumLog = sumLog + log(prOf1CharSeriesWhenTyping1Word(line1, line2));
+			sumLog10 = sumLog10 + log10(prOf1CharSeriesWhenTyping1Word(line1, line2));
 		}
 	}
 	else
@@ -849,7 +833,12 @@ double logPrOfGettingDocument1WhenTypingDocument2(string document1, string docum
 	file1.close();
 	file2.close();
 
-	// use logs to retain numerical precision
-
-	return sumLog;
+	if (select == "e")
+	{
+		return sumLog;
+	}
+	else
+	{
+		return sumLog10;
+	}
 }
