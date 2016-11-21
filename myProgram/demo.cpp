@@ -399,6 +399,26 @@ void main()
 			endOfService("[log Probability(observedDocument, actualDocument)]:");
 			break;
 			}
+		case 'L': case 'l':
+		{
+			displayParametersSpellingModel();
+			displayParametersKbModel();
+			string observedDocument, actualDocument;
+			cout << "[learn parameters based on brute force probability]:" << endl;
+			cout << "What is the actual document to type?" << endl;
+			cin >> actualDocument;
+			cout << "What is the observed corrupted document? (Enter . to quit)" << endl;
+			cin >> observedDocument;
+			while (observedDocument != ".")
+			{
+				learnParameters(observedDocument, actualDocument);
+				cout << "What is the observed corrupted document? (Enter . to quit)" << endl;
+				cin >> observedDocument;
+			}
+
+			endOfService("[learn parameters]:");
+			break;
+		}
 		case 'X': case 'x'://
 			setParametersSpellingModel();
 			endOfService("Reset parameters of the spelling model");

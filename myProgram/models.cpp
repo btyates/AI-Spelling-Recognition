@@ -842,3 +842,53 @@ double logPrOfGettingDocument1WhenTypingDocument2(string document1, string docum
 		return sumLog10;
 	}
 }
+
+void learnParameters(string corruptedText, string originalText)
+{
+	double parameterProbability = 0;
+	double candidateParameterProb = 0;
+	double hitParam = 0;
+	double moveParam = 0;
+
+	// vary Pr(repeat) and Pr(hit) on 0 - 1 with .01 increments
+
+	// set the parameters
+	for (int i = 0; i < 1.01; i += 0.01)
+	{
+		// set hit parameter
+		prKbHit = i;
+		prKbMiss = 1 - prKbHit;
+
+		for (int j = 0; j < 1.01; j += 0.01)
+		{
+			// set move parameter
+			prSpMoveOn = j;
+			prSpRepeat = 1 - prSpMoveOn;
+
+			// calculate the probability of generating the corrupted message given the parameters
+			candidateParameterProb = logPrOfGettingDocument1WhenTypingDocument2(corruptedText, originalText, "e");
+
+			// check the probability
+			if (candidateParameterProb > parameterProbability)
+			{
+				parameterProbability = candidateParameterProb;
+				hitParam = prKbHit;
+				moveParam = prSpMoveOn;
+			}
+		}
+	}
+
+	// Assign the final parameters based on the highest probability
+	prKbHit = hitParam;
+	prKbMiss = 1 - prKbHit;
+	prSpMoveOn = moveParam;
+	prSpRepeat = 1 - prSpMoveOn;
+
+	cout << "The most likely parameters for typing the corrupted message given the original message are: " << endl
+		<< "prKbHit = " << prKbHit << endl
+		<< "prKbMiss = " << prKbMiss << endl
+		<< "prSpMoveOn = " << prSpMoveOn << endl
+		<< "prSpRepeat = " << prSpRepeat << endl;
+}
+
+
