@@ -173,6 +173,6 @@ int main()
 
 double prOf1CharSeriesWhenTyping1Word(string observedString, string wordString);
 
-double logPrOfGettingDocument1WhenTypingDocument2(string document1, string document2, string select);
+double logPrOfGettingDocument1WhenTypingDocument2(string document1, string document2, string select, bool debug);
 
 void learnParameters(string corruptedText, string originalText);

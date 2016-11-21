@@ -786,7 +786,7 @@ double prOf1CharSeriesWhenTyping1Word(string observedString, string wordString)
 
 }
 
-double logPrOfGettingDocument1WhenTypingDocument2(string document1, string document2, string select)
+double logPrOfGettingDocument1WhenTypingDocument2(string document1, string document2, string select, bool debug)
 {
 	// Determine for each document d who is the most likely person who has generated the document d when trying to type the Biola vision statement. 
 
@@ -820,7 +820,10 @@ double logPrOfGettingDocument1WhenTypingDocument2(string document1, string docum
 		{
 			// use logs to retain numerical precision
 			// for each pair di and wi, calcuate Pr(di|wi,p) and logPr(di|wi,p)
-			cout << "Add log Pr(" << line1 << "|" << line2 << ")" << endl;	
+			if (debug)
+			{
+				cout << "Add log Pr(" << line1 << "|" << line2 << ")" << endl;
+			}
 			sumLog = sumLog + log(prOf1CharSeriesWhenTyping1Word(line1, line2));
 			sumLog10 = sumLog10 + log10(prOf1CharSeriesWhenTyping1Word(line1, line2));
 		}
@@ -845,7 +848,7 @@ double logPrOfGettingDocument1WhenTypingDocument2(string document1, string docum
 
 void learnParameters(string corruptedText, string originalText)
 {
-	double parameterProbability = 0;
+	double parameterProbability = -1000;
 	double candidateParameterProb = 0;
 	double hitParam = 0;
 	double moveParam = 0;
@@ -853,20 +856,19 @@ void learnParameters(string corruptedText, string originalText)
 	// vary Pr(repeat) and Pr(hit) on 0 - 1 with .01 increments
 
 	// set the parameters
-	for (int i = 0; i < 1.01; i += 0.01)
+	for (double i = 0; i < 1.01; i += 0.1)
 	{
 		// set hit parameter
 		prKbHit = i;
 		prKbMiss = 1 - prKbHit;
-
-		for (int j = 0; j < 1.01; j += 0.01)
+		for (double j = 0; j < 1.01; j += 0.1)
 		{
 			// set move parameter
 			prSpMoveOn = j;
 			prSpRepeat = 1 - prSpMoveOn;
 
 			// calculate the probability of generating the corrupted message given the parameters
-			candidateParameterProb = logPrOfGettingDocument1WhenTypingDocument2(corruptedText, originalText, "e");
+			candidateParameterProb = logPrOfGettingDocument1WhenTypingDocument2(corruptedText, originalText, "e", false);
 
 			// check the probability
 			if (candidateParameterProb > parameterProbability)

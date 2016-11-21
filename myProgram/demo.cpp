@@ -223,6 +223,7 @@ void main()
 		// cout<<"H. Keyboard+Spelling HMM model demo"<<endl;
 		cout<<"P. prOf1CharSeriesObservedWhenTyping1Word(string observed, string word)"<<endl;
 		cout << "D. logPrOfGettingDocument2WhenTyping1Document2(document1, document2)" << endl;
+		cout << "L. learnParametersFromDocument(corruptedText, originalText)" << endl;
 		//cout << "****  Typing and Spelling Recognition Testings	 ****" << endl;
 		//cout<<"T. Test typing a message of 20 random words" << endl;
 		cout<<"B. Simulate typing of Biola vision statements" << endl;
@@ -387,8 +388,8 @@ void main()
 			cin >> observedDocument;
 			while (observedDocument != ".")
 			{
-				sumLog = logPrOfGettingDocument1WhenTypingDocument2(observedDocument, actualDocument, selectLog);
-				sumLog10 = logPrOfGettingDocument1WhenTypingDocument2(observedDocument, actualDocument, selectLog10);
+				sumLog = logPrOfGettingDocument1WhenTypingDocument2(observedDocument, actualDocument, selectLog, true);
+				sumLog10 = logPrOfGettingDocument1WhenTypingDocument2(observedDocument, actualDocument, selectLog10, true);
 				cout << "log Probability(" << observedDocument << " | " << actualDocument << ") is:" << endl;
 				cout << sumLog << " using natural logarithm base e, or equivalently" << endl;
 				cout << sumLog10 << " using logarithm base 10" << endl;
