@@ -179,4 +179,6 @@ void learnParameters(string corruptedText, string originalText);
 
 void tryToRecoverMessageFromCorruptedMessage(string corruptedText, string vocabularyText, string recoveredText);
 
-//void tryToRecoverMessageFrom2corruptedMessages();
+void tryToRecoverMessageFrom2CorruptedMessage(string corruptedText1, string corruptedText2, string vocabularyText, string recoveredText);
+
+void createQualityReport(string recoveredFile1, string recoveredFile2, string masterFile, string qualityReportFile);

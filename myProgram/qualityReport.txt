@@ -1,0 +1,24 @@
+Regarding the quality of recoveredMessage1.txt:
+
+Out of the 195 word in the original message
+
+88 words recognized in the top 1 list , 0.451282%
+
+110 words recognized in the top 2 list , 0.564103%
+
+126 words recognized in the top 3 list , 0.646154%
+
+139 words recognized in the top 4 list , 0.712821%
+
+Regarding the quality of recoveredMessage2.txt:
+
+Out of the 195 word in the original message
+
+142 words recognized in the top 1 list , 0.728205%
+
+168 words recognized in the top 2 list , 0.861538%
+
+176 words recognized in the top 3 list , 0.902564%
+
+185 words recognized in the top 4 list , 0.948718%
+

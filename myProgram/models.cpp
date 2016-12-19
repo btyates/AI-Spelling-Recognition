@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <cstring>
+#include <iterator>
 #include <iostream>
 #include <fstream>
 #include <conio.h>	
@@ -9,7 +10,7 @@
 #include <cmath>
 #include <stdio.h>
 #include <math.h>
-
+#include <sstream>
 #include "models.h"
 
 using namespace std;
@@ -690,7 +691,7 @@ double prOf1CharSeriesWhenTyping1Word(string observedString, string wordString)
 	when you want to type the word stored in the string object wordString
 	*/
 
-	float probability = 0; // final answer probability
+	double probability = 0; // final answer probability
 	int wordSize = wordString.size();
 	int observedSize = observedString.size();
 
@@ -893,7 +894,6 @@ void learnParameters(string corruptedText, string originalText)
 		<< "prSpRepeat = " << prSpRepeat << endl;
 }
 
-// Option R: Recover an unkown messaged based on the result of Mr. X typing the message X once, resulting in corruptedMessage1.txt
 void tryToRecoverMessageFromCorruptedMessage(string corruptedText, string vocabularyText, string recoveredText)
 {
 	//the words in message X are contained in the vocabulary.txt.
@@ -994,3 +994,269 @@ void tryToRecoverMessageFromCorruptedMessage(string corruptedText, string vocabu
 
 }
 
+void tryToRecoverMessageFrom2CorruptedMessage(string corruptedText1, string corruptedText2, string vocabularyText, string recoveredText)
+{
+	//the words in message X are contained in the vocabulary.txt.
+	// option R should automatically recover message X from the corrupted result in corruptedMessage1.txt
+
+	// placeholder varialbes
+	string messageLine1; // for reading in lines from corruptedMessage
+	string messageLine2; // for reading in lines from vocabulary
+	string vocabLine;
+	string tempCandidateWord;
+	float tempCandidatePr;
+	float tempCandidatePr1; // for storing the probabilities associated with each vocabulary word
+	float tempCandidatePr2;
+
+	// Assign File handlers (and open files)
+	ifstream message1(corruptedText1);
+	ifstream message2(corruptedText2);
+	ifstream vocab(vocabularyText);
+	ofstream output(recoveredText);
+	//close the vocab file
+	vocab.close();
+
+	// save the candidate vocabulary words and corresponding probabiilties for each word 
+	vector <string> candidateWord;
+	vector <float> candidatePr;
+
+	// check the files is open
+	if (message1.is_open() && message2.is_open())
+	{
+		//cout << "Files opened" << endl;
+		// check for each word w in the vocabulary.txt the probability Pr ( s | w,X) that Mr. X would generate the corrupted string s when Mr. X types the word w=
+
+		// Read the lines (words) one by one from the corrupted file
+		while (getline(message1, messageLine1) && getline(message2, messageLine2))
+		{
+			//cout << "text line is " << line1 << endl; 
+			// check the vocabulary file line by line
+			vocab.open(vocabularyText);
+			while (getline(vocab, vocabLine))
+			{
+				//cout << "vocab word is " << line2 << endl;
+				// use logs to retain numerical precision
+				// for each pair di and wi, calcuate Pr(di|wi,p) and logPr(di|wi,p)
+				// store the candidate word and probability
+				candidateWord.push_back(vocabLine);
+				tempCandidatePr1 = log(prOf1CharSeriesWhenTyping1Word(messageLine1, vocabLine));
+				tempCandidatePr2 = log(prOf1CharSeriesWhenTyping1Word(messageLine2, vocabLine));
+				tempCandidatePr = tempCandidatePr1 + tempCandidatePr2;
+				candidatePr.push_back(tempCandidatePr);
+			}
+			vocab.close();
+
+			// find the top 4 candidate words with the highest Pr(s | w,X)
+			// sort the vectors in descending order from the highest probability words
+			for (int counter = 0; counter < candidateWord.size(); counter++)
+			{
+				for (int i = 0; i < candidateWord.size() - 1; i++)
+				{
+					if (candidatePr[i] < candidatePr[i + 1])
+					{
+						// sort the probability vector
+						tempCandidatePr = candidatePr[i + 1];
+						candidatePr[i + 1] = candidatePr[i];
+						candidatePr[i] = tempCandidatePr;
+
+						// sort the word vector correspondingly
+						tempCandidateWord = candidateWord[i + 1];
+						candidateWord[i + 1] = candidateWord[i];
+						candidateWord[i] = tempCandidateWord;
+					}
+				}
+			}
+
+			// save these 4 words on a separate line in the output file recoveredMessage_V1.txt to indicate they are the most likely candidates 
+			// regarding the corresponding actual word in message X based on the evicdence of the ocrrupted string s
+			// output the first four words to represent the four words with the highest probability
+			if (output.is_open())
+			{
+				//cout << "Output file is open" << endl;
+				for (int i = 0; i < 4; i++)
+				{
+					output << candidateWord[i] << " ";
+				}
+				output << "\n";
+			}
+
+			// now clear the vectors
+			candidateWord.clear();
+			candidatePr.clear();
+		}
+		// Close the files
+		message1.close();
+		message2.close();
+		output.close();
+	}
+	else
+	{
+		cout << "Unable to open source file" << endl;
+	}
+
+}
+
+void createQualityReport(string recoveredFile1, string recoveredFile2, string masterFile, string qualityReportFile)
+{
+	// Assign File handlers (and open files)
+	ifstream list1(recoveredFile1);
+	ifstream list2(recoveredFile2);
+	ifstream master(masterFile);
+	ofstream output(qualityReportFile);
+
+	string tempString;
+	string buf;
+	vector <vector <string> > topWordsFile1;
+	vector <vector <string> > topWordsFile2;
+	vector <string> masterString;
+
+	// load all the words from the master line
+	while (getline(master, tempString))
+	{
+		masterString.push_back(tempString);
+	}
+
+	// get the size of the master document
+	int size = masterString.size();
+
+	// load all the candidate words from the 1st list
+	int i = 0; // use i as an index for the outer vector
+	topWordsFile1.resize(size);
+	while (getline(list1, tempString))
+	{
+		stringstream ss(tempString); //Insert string into a stream
+		while (ss >> buf)
+			topWordsFile1[i].push_back(buf);
+		i++;
+	}
+
+	// load all the candidate words from the 1st list 
+	i = 0; // use i as an index for the outer vector
+	topWordsFile2.resize(size);
+	while (getline(list2, tempString))
+	{
+		stringstream ss(tempString); //Insert string into a stream
+		while (ss >> buf)
+		{
+			topWordsFile2[i].push_back(buf);
+		}
+		i++;
+	}
+
+	int list1top1 = 0;
+	int list1top2 = 0;
+	int list1top3 = 0;
+	int list1top4 = 0;
+
+	// compare strings
+	for (int j = 0; j < size; j++)
+	{
+		if (masterString[j] == topWordsFile1[j][0])
+		{
+			list1top1++;
+		}
+		else if (masterString[j] == topWordsFile1[j][1])
+		{
+			//cout << topWordsFile1[j][1] << endl;
+			list1top2++;
+		}
+		else if (masterString[j] == topWordsFile1[j][2])
+		{
+			//cout << topWordsFile1[j][2] << endl;
+			list1top3++;
+		}
+		else if (masterString[j] == topWordsFile1[j][3])
+		{
+			//cout << topWordsFile1[j][3] << endl;
+			list1top4++;
+		}
+	}
+
+	// catch the results from the previous list;
+	list1top2 = list1top1 + list1top2;
+	list1top3 = list1top2 + list1top3;
+	list1top4 = list1top3 + list1top4;
+
+	int list2top1 = 0;
+	int list2top2 = 0;
+	int list2top3 = 0;
+	int list2top4 = 0;
+
+	// compare strings
+	for (int j = 0; j < size; j++)
+	{
+		if (masterString[j] == topWordsFile2[j][0])
+		{
+			list2top1++;
+		}
+		else if (masterString[j] == topWordsFile2[j][1])
+		{
+			list2top2++;
+		}
+		else if (masterString[j] == topWordsFile2[j][2])
+		{
+			list2top3++;
+		}
+		else if (masterString[j] == topWordsFile2[j][3])
+		{
+			list2top4++;
+		}
+	}
+
+	// catch the results from the previous list;
+	list2top2 = list2top1 + list2top2;
+	list2top3 = list2top2 + list2top3;
+	list2top4 = list2top3 + list2top4;
+
+	double top1 = double(list1top1);
+	double top2 = double(list1top2);
+	double top3 = double(list1top3);
+	double top4 = double(list1top4);
+
+	double newSize = double(size);
+
+	double percent1 = top1 / size;
+	double percent2 = top2 / size;
+	double percent3 = top3 / size;
+	double percent4 = top4 / size;
+
+	cout << "Regarding the quality of recoveredMessage1.txt:" << endl;
+	cout << "Out of the " << size << " word in the original message" << endl;
+	cout << list1top1 << " words recognized in the top 1 list , " << percent1 << "%" << endl;
+	cout << list1top2 << " words recognized in the top 2 list , " << percent2 << "%" << endl;
+	cout << list1top3 << " words recognized in the top 3 list , " << percent3 << "%" << endl;
+	cout << list1top4 << " words recognized in the top 4 list , " << percent4 << "%" << endl;
+
+	output << "Regarding the quality of recoveredMessage1.txt:" << '\n' << endl;
+	output << "Out of the " << size << " word in the original message" << '\n' << endl;
+	output << list1top1 << " words recognized in the top 1 list , " << percent1 << "%" << '\n' << endl;
+	output << list1top2 << " words recognized in the top 2 list , " << percent2 << "%" << '\n' << endl;
+	output << list1top3 << " words recognized in the top 3 list , " << percent3 << "%" << '\n' << endl;
+	output << list1top4 << " words recognized in the top 4 list , " << percent4 << "%" << '\n' << endl;
+
+	top1 = double(list2top1);
+	top2 = double(list2top2);
+	top3 = double(list2top3);
+	top4 = double(list2top4);
+
+	percent1 = top1 / newSize;
+	percent2 = top2 / newSize;
+	percent3 = top3 / newSize;
+	percent4 = top4 / newSize;
+
+	cout << "Regarding the quality of recoveredMessage2.txt:" << endl;
+	cout << "Out of the " << size << " word in the original message" << endl;
+	cout << list2top1 << " words recognized in the top 1 list , " << percent1 << "%" << endl;
+	cout << list2top2 << " words recognized in the top 2 list , " << percent2 << "%" << endl;
+	cout << list2top3 << " words recognized in the top 3 list , " << percent3 << "%" << endl;
+	cout << list2top4 << " words recognized in the top 4 list , " << percent4 << "%" << endl;
+
+
+	output << "Regarding the quality of recoveredMessage2.txt:" << '\n' << endl;
+	output << "Out of the " << size << " word in the original message" << '\n' << endl;
+	output << list2top1 << " words recognized in the top 1 list , " << percent1 << "%" << '\n' << endl;
+	output << list2top2 << " words recognized in the top 2 list , " << percent2 << "%" << '\n' << endl;
+	output << list2top3 << " words recognized in the top 3 list , " << percent3 << "%" << '\n' << endl;
+	output << list2top4 << " words recognized in the top 4 list , " << percent4 << "%" << '\n' << endl;
+
+}

@@ -18,6 +18,7 @@ using namespace std;
 /************************************************************************/
 void demoOfKeyboardModel()
 {
+	cout << "Welcom Mr. Suh, congratulations on graduating..." << endl;
 	cout << endl << endl 
 		 << "*********************************************************" << endl
 		 << "Test the correctness of the keyboard model implementation, and" << endl
@@ -327,7 +328,7 @@ void main()
 			cout << "*****************************************************************" << endl << endl;
 			//cout << "Press space to continue" << endl << endl;
 			//_getch();
-			cout << "Do you want to change the default names of the files (y or no)";
+			cout << "Do you want to change the default names of the files (y or n)";
 			char inputChoice;
 			string corruptFile;
 			string vocabFile;
@@ -341,71 +342,74 @@ void main()
 				cin >> vocabFile;
 				cout << "Store the recovered message in:" << endl;
 				cin >> recoveredFile;
+				cout << "Thinking..." << endl << endl;
 				tryToRecoverMessageFromCorruptedMessage(corruptFile, vocabFile, recoveredFile);
 			}
 			else
 			{
 				cout << "Using default filenames" << endl;
+				cout << "Thinking..." << endl << endl;
 				tryToRecoverMessageFromCorruptedMessage("corruptedMessage1.txt", "vocabulary.txt", "recoveredMessage_V1.txt");
 			}
 
 			cout << "Finished! See the results in the recoveredMessage_V1.txt" << endl << endl;
-
-			cout << "Press space to continue." << endl << endl;
-			_getch();
 
 			endOfService("[Recover original message X from 1 corrupted version]:");
 		}
 		break;
 
 		case 'T': case 't'://
+		{
 			cout << "[Recover original message from 2 corrupted versions]:" << endl << endl;
 
 			cout << "*****************************************************" << endl;
 			cout << "Trying to recover the corrupted message, make sure" << endl;
 			cout << "the file containing the 1st corrupted version and" << endl;
-			cout << "the file containing the 2nd corrupted version and the file containing the vocabulary do exist." << endl;
+			cout << "the file containing the 2nd corrupted version and" << endl;
+			cout << "the file containing the vocabulary do exist." << endl;
 			cout << "******************************************************" << endl;
 			cout << "By default, we will look for" << endl;
 			cout << "corruptedMessag1.txt as the file containing the 1st corrupted version" << endl;
 			cout << "corruptedMessage2.txt as the file containing the 2nd corrupted version" << endl;
 			cout << "vocabulary.txt as the file containing the vocabulary words." << endl;
 			cout << "************************************************************" << endl;
-			cout << "By default, each word in corruptedMessage1.txt and each word in corruptedMesasage2.txt are paired together to determine the top 4 most likely matches in vocabulary.txt with the recovered message stored in the recoveredMessage_V2.txt" << endl;
+			cout << "By default, each word in corruptedMessage1.txt and each word in" << endl;
+			cout << "corruptedMesasage2.txt are paired together to determine the top 4" << endl;
+			cout << "most likely matches in vocabulary.txt with the recovered message" << endl;
+			cout << "stored in the recoveredMessage_V2.txt" << endl;
 			cout << "***********************************************************" << endl << endl;
-
-			cout << "Press space to continue" << endl << endl;
-
-			_getch();
-
-			//cout << "Do you want to change the default names of the files? (y or n)";
-			//
-
-			//tryToRecoverMessageFrom2corruptedMessages();
+			cout << "Do you want to change the default names of the files (y or n)";
+			char inputChoice;
+			string corruptFile1;
+			string corruptFile2;
+			string vocabFile;
+			string recoveredFile;
+			cin >> inputChoice;
+			if (inputChoice == 'y' || inputChoice == 'Y')
+			{
+				cout << "Corrupted message 1 in:" << endl;
+				cin >> corruptFile1;
+				cout << "Corrupted message 2 in:" << endl;
+				cin >> corruptFile2;
+				cout << "Vocabulary in:" << endl;
+				cin >> vocabFile;
+				cout << "Store the recovered message in:" << endl;
+				cin >> recoveredFile;
+				cout << "Thinking..." << endl << endl;
+				tryToRecoverMessageFrom2CorruptedMessage(corruptFile1, corruptFile2, vocabFile, recoveredFile);
+			}
+			else
+			{
+				cout << "Using default filenames" << endl;
+				cout << "Thinking..." << endl << endl;
+				tryToRecoverMessageFrom2CorruptedMessage("corruptedMessage1.txt", "corruptedMessage2.txt", "vocabulary.txt", "recoveredMessage_V2.txt");
+			}
 
 			cout << "Finished! See the results in the recoveredMessage_V2.txt" << endl << endl;
 
-			cout << "Press space to continue." << endl << endl;
-			_getch();
-
 			endOfService("[Recover original message X from 2 corrupted versions]:");
+		}
 			break;
-
-
-			//	cout 
-			//	 << "*********************************************************" << endl
-			//	 << "Words in corruptedMessage.txt examined one by one to" << endl
-			//	 << "  determine the top 4 most likely matches in testVocabulary.txt" << endl
-			//	 << "See the recovered message in recoveredTestMessage.txt" << endl
-			//	 << "*********************************************************" << endl;  
-			//	cout 
-			//	 << "*********************************************************" << endl
-			//	 << "If corruptedMessage.txt was generated by Option T earlier," << endl
-			//	 << "  the real message is in realMessage.txt" << endl
-			//	 << "*********************************************************" << endl;  
-
-			//	endOfService("[Recover original message]");
-			//	break;
 
 		case 'P': case 'p'://
 			displayParametersSpellingModel();
@@ -494,6 +498,49 @@ void main()
 			displayParametersSpellingModel();
 			endOfService("Display of parameter values");
 			break;
+
+		case 'U': case 'u'://
+		{
+			char inputChoice;
+			string reportFile;
+			cout << "[Check the quality of the recovered message(s)]:" << endl;
+			cout << "Please enter the file name for storing the quality report." << endl;
+			cin >> reportFile;
+			cout << endl;
+			cout << "Are the corrupted versions already recovered through options L, R, T? (y or n)" << endl << endl;
+			cin >> inputChoice;
+			if (inputChoice != 'y')
+			{
+				cout << "Please run options L, R, and T first." << endl;
+				cout << "Press space to continue" << endl;
+				_getch();
+				break;
+			}
+
+			// assign file names
+			string recoveredFile1 = "recoveredMessage_V1.txt"; // for reading in lines from vocabulary
+			string recoveredFile2 = "recoveredMessage_V2.txt";
+			string masterFile = "messageX.txt";
+			string qualityReportFile = reportFile;
+
+			cout << "Check the quality of the recovered message vs the original message" << endl << endl;
+
+			cout << "Be default, we assume 2 versions of the recovered message are in" << endl;
+			cout << "recoveredMessages_V1.txt" << endl;
+			cout << "recoveredMessage_V2.txt" << endl << endl;
+
+			cout << "By default, we assume the original message is in messageX.txt" << endl << endl;
+
+			cout << "Press space to continue" << endl;
+			_getch();
+
+			cout << "Creating quality report" << endl << endl;
+			createQualityReport(recoveredFile1, recoveredFile2, masterFile, qualityReportFile);
+
+			cout << "Press space to continue" << endl;
+			_getch();
+		}
+		break;
 
 		default:
 			cout << "[?? UNKNOWN COMMAND]:" << endl;

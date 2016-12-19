@@ -1,7 +1,12 @@
 ﻿  models.cpp
-c:\users\yatesb\desktop\school\ai-spelling-recognition\myprogram\models.cpp(782): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\yatesb\desktop\school\ai-spelling-recognition\myprogram\models.cpp(947): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\yatesb\desktop\school\ai-spelling-recognition\myprogram\models.cpp(956): warning C4018: '<': signed/unsigned mismatch
-c:\users\yatesb\desktop\school\ai-spelling-recognition\myprogram\models.cpp(958): warning C4018: '<': signed/unsigned mismatch
+c:\users\yatesb\desktop\school\ai-spelling-recognition\myprogram\models.cpp(941): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\yatesb\desktop\school\ai-spelling-recognition\myprogram\models.cpp(948): warning C4018: '<': signed/unsigned mismatch
+c:\users\yatesb\desktop\school\ai-spelling-recognition\myprogram\models.cpp(950): warning C4018: '<': signed/unsigned mismatch
+c:\users\yatesb\desktop\school\ai-spelling-recognition\myprogram\models.cpp(1042): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\yatesb\desktop\school\ai-spelling-recognition\myprogram\models.cpp(1043): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\yatesb\desktop\school\ai-spelling-recognition\myprogram\models.cpp(1051): warning C4018: '<': signed/unsigned mismatch
+c:\users\yatesb\desktop\school\ai-spelling-recognition\myprogram\models.cpp(1053): warning C4018: '<': signed/unsigned mismatch
+  demo.cpp
+  Generating Code...
   myProgram.vcxproj -> C:\Users\yatesb\Desktop\School\AI-Spelling-Recognition\Debug\myProgram.exe
   myProgram.vcxproj -> C:\Users\yatesb\Desktop\School\AI-Spelling-Recognition\Debug\myProgram.pdb (Full PDB)
