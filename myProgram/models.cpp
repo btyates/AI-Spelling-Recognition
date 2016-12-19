@@ -893,4 +893,123 @@ void learnParameters(string corruptedText, string originalText)
 		<< "prSpRepeat = " << prSpRepeat << endl;
 }
 
+// Option R: Recover an unkown messaged based on the result of Mr. X typing the message X once, resulting in corruptedMessage1.txt
+void tryToRecoverMessageFromCorruptedMessage(string corruptedText, string vocabularyText, string recoveredText)
+{
+	//the words in message X are contained in the vocabulary.txt.
+	// option R should automatically recover message X from the corrupted result in corruptedMessage1.txt
+
+	//char word[21];
+	//double sumLog = 0;
+	//double sumLog10 = 0;
+	double temp = 0;
+	string line1;
+	string line2;
+
+	// Assign File handlers
+	ifstream message(corruptedText);
+	ifstream vocab(vocabularyText);
+	ofstream output(recoveredText);
+
+	// save the candidate vocabulary words and corresponding probabiilties for each word 
+	vector <string> candidateWord;
+	vector <double> candidatePr;
+
+	string tempCandidateWord;
+	double tempCandidatePr;
+
+	// IMPLEMENTATION
+	vocab.close();
+	// For each corrupted string s in corruptedMessage1.txt,
+
+	//file1.open(document1);
+	//file2.open(document2);
+
+	// check the files is open
+	if (message.is_open())
+	{
+		//cout << "Files opened" << endl;
+		// check for each word w in the vocabulary.txt the probability Pr ( s | w,X) that Mr. X would generate the corrupted string s when Mr. X types the word w=
+
+		// Read the lines (words) one by one from the corrupted file
+		while (getline(message, line1))
+		{
+			//cout << "text line is " << line1 << endl; 
+			// check the vocabulary file line by line
+			vocab.open(vocabularyText);
+			while (getline(vocab, line2))
+			{
+				cout << "vocab word is " << line2 << endl;
+				// use logs to retain numerical precision
+				// for each pair di and wi, calcuate Pr(di|wi,p) and logPr(di|wi,p)
+				// store the candidate word and probability
+				candidateWord.push_back(line2);
+				tempCandidatePr = log(prOf1CharSeriesWhenTyping1Word(line1, line2));
+				candidatePr.push_back(tempCandidatePr);
+			}
+			vocab.close();
+
+			// find the top 4 candidate words with the highest Pr(s | w,X)
+
+				// sort the vectors in descending order from the highest probability words
+
+			cout << "Candidate word size is " << candidateWord.size() << endl << endl;
+
+			for (int counter = 0; counter < candidateWord.size(); counter++)
+			{
+				for (int i = 0; i < candidateWord.size() - 1; i++)
+				{
+					if (candidatePr[i] < candidatePr[i + 1])
+					{
+						// sort the probability vector
+						tempCandidatePr = candidatePr[i + 1];
+						candidatePr[i + 1] = candidatePr[i];
+						candidatePr[i] = tempCandidatePr;
+
+						// sort the word vector correspondingly
+						tempCandidateWord = candidateWord[i + 1];
+						candidateWord[i + 1] = candidateWord[i];
+						candidateWord[i] = tempCandidateWord;
+					}
+				}
+			}
+
+			//cout << "Candidazte word size is " << candidateWord.size() << endl << endl;
+
+			// save these 4 words on a separate line in the output file recoveredMessage_V1.txt to indicate they are the most likely candidates 
+			// regarding the corresponding actual word in message X based on the evicdence of the ocrrupted string s
+
+				// now output the first four words to represent the four words with the highest probability
+			
+			if (output.is_open())
+			{
+				//cout << "Output file is open" << endl;
+				for (int i = 0; i < 4; i++)
+				{
+					output << candidateWord[i] << " ";
+				}
+				output << "\n";
+			}
+
+			// now clear the vectors
+			candidateWord.clear();
+			candidatePr.clear();
+
+			/*for (int i = 0; i < candidateWord.size(); i++)
+			{
+				cout << candidateWord[i] << endl;
+			}
+			*/
+			//cout << "Candidate word size is " << candidateWord.size() << " finally" << endl;
+		}
+		// Close the files
+		message.close();
+		output.close();
+	}
+	else
+	{
+		cout << "Unable to open source file" << endl;
+	}
+
+}
 

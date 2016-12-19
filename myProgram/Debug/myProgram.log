@@ -1,4 +1,6 @@
 ﻿  models.cpp
 c:\users\yatesb\desktop\school\ai-spelling-recognition\myprogram\models.cpp(782): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\yatesb\desktop\school\ai-spelling-recognition\myprogram\models.cpp(958): warning C4018: '<': signed/unsigned mismatch
+c:\users\yatesb\desktop\school\ai-spelling-recognition\myprogram\models.cpp(960): warning C4018: '<': signed/unsigned mismatch
   myProgram.vcxproj -> C:\Users\yatesb\Desktop\School\AI-Spelling-Recognition\Debug\myProgram.exe
   myProgram.vcxproj -> C:\Users\yatesb\Desktop\School\AI-Spelling-Recognition\Debug\myProgram.pdb (Full PDB)
