@@ -899,31 +899,25 @@ void tryToRecoverMessageFromCorruptedMessage(string corruptedText, string vocabu
 	//the words in message X are contained in the vocabulary.txt.
 	// option R should automatically recover message X from the corrupted result in corruptedMessage1.txt
 
-	//char word[21];
-	//double sumLog = 0;
-	//double sumLog10 = 0;
-	double temp = 0;
-	string line1;
-	string line2;
-
-	// Assign File handlers
+	// placeholder varialbes
+	string line1; // for reading in lines from corruptedMessage
+	string line2; // for reading in lines from vocabulary
+	string tempCandidateWord; // for storing vocabulary words
+	float tempCandidatePr; // for storing the probabilities associated with each vocabulary word
+	
+	// Assign File handlers (and open files)
 	ifstream message(corruptedText);
 	ifstream vocab(vocabularyText);
 	ofstream output(recoveredText);
+	//close the vocab file
+	vocab.close();
 
 	// save the candidate vocabulary words and corresponding probabiilties for each word 
 	vector <string> candidateWord;
-	vector <double> candidatePr;
-
-	string tempCandidateWord;
-	double tempCandidatePr;
+	vector <float> candidatePr;
 
 	// IMPLEMENTATION
-	vocab.close();
 	// For each corrupted string s in corruptedMessage1.txt,
-
-	//file1.open(document1);
-	//file2.open(document2);
 
 	// check the files is open
 	if (message.is_open())
@@ -939,7 +933,7 @@ void tryToRecoverMessageFromCorruptedMessage(string corruptedText, string vocabu
 			vocab.open(vocabularyText);
 			while (getline(vocab, line2))
 			{
-				cout << "vocab word is " << line2 << endl;
+				//cout << "vocab word is " << line2 << endl;
 				// use logs to retain numerical precision
 				// for each pair di and wi, calcuate Pr(di|wi,p) and logPr(di|wi,p)
 				// store the candidate word and probability
@@ -950,11 +944,7 @@ void tryToRecoverMessageFromCorruptedMessage(string corruptedText, string vocabu
 			vocab.close();
 
 			// find the top 4 candidate words with the highest Pr(s | w,X)
-
 				// sort the vectors in descending order from the highest probability words
-
-			cout << "Candidate word size is " << candidateWord.size() << endl << endl;
-
 			for (int counter = 0; counter < candidateWord.size(); counter++)
 			{
 				for (int i = 0; i < candidateWord.size() - 1; i++)
@@ -978,9 +968,7 @@ void tryToRecoverMessageFromCorruptedMessage(string corruptedText, string vocabu
 
 			// save these 4 words on a separate line in the output file recoveredMessage_V1.txt to indicate they are the most likely candidates 
 			// regarding the corresponding actual word in message X based on the evicdence of the ocrrupted string s
-
-				// now output the first four words to represent the four words with the highest probability
-			
+				// output the first four words to represent the four words with the highest probability
 			if (output.is_open())
 			{
 				//cout << "Output file is open" << endl;
@@ -994,13 +982,6 @@ void tryToRecoverMessageFromCorruptedMessage(string corruptedText, string vocabu
 			// now clear the vectors
 			candidateWord.clear();
 			candidatePr.clear();
-
-			/*for (int i = 0; i < candidateWord.size(); i++)
-			{
-				cout << candidateWord[i] << endl;
-			}
-			*/
-			//cout << "Candidate word size is " << candidateWord.size() << " finally" << endl;
 		}
 		// Close the files
 		message.close();
